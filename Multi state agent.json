@@ -1,0 +1,194 @@
+{
+  "agent_id": "",
+  "channel": "voice",
+  "last_modification_timestamp": 1747569441900,
+  "agent_name": "Multi state agent",
+  "response_engine": {
+    "type": "retell-llm",
+    "llm_id": "llm_6d0cbc6a4d0897027cb082ff0322",
+    "version": 0
+  },
+  "language": "en-US",
+  "opt_out_sensitive_data_storage": false,
+  "opt_in_signed_url": false,
+  "version": 0,
+  "is_published": false,
+  "post_call_analysis_model": "gpt-4o-mini",
+  "voice_id": "11labs-Cimo",
+  "max_call_duration_ms": 3600000,
+  "interruption_sensitivity": 0.9,
+  "voicemail_detection_timeout_ms": 30000,
+  "allow_user_dtmf": true,
+  "user_dtmf_options": {},
+  "retellLlmData": {
+    "llm_id": "llm_6d0cbc6a4d0897027cb082ff0322",
+    "version": 0,
+    "model": "gpt-4.1",
+    "states": [
+      {
+        "name": "collect_city",
+        "state_prompt": "## OBJECTIVES:\n    - Collect the {{entity_name}} of the customer.\n    - Confirm the {{entity_name}} once it's collected.\n\n## Variable Assignment:\n    entity_name = \"city\"\n\n## Prompt:\n\"Could you please tell me which city you are calling regarding?\"\n",
+        "edges": [
+          {
+            "description": "The condition that triggers the transition to the next state. e.g., \"If the user has provided the name\"",
+            "speak_during_transition": false,
+            "destination_state_name": "collect_location_in_city"
+          },
+          {
+            "description": "The condition that triggers the transition to the next state. e.g., \"If the user has provided the name\"",
+            "speak_during_transition": false,
+            "destination_state_name": "discover_intent"
+          }
+        ],
+        "tools": []
+      },
+      {
+        "name": "collect_location_in_city",
+        "state_prompt": "## OBJECTIVES:\n    - Collect the {{entity_name}} of the customer.\n    - Confirm the {{entity_name}} once it's collected.\n\n## Variable Assignment:\n    entity_name = \"location in the city\"\n\n## Prompt:\n\"Can you please tell me the area or location you're interested in within {{city}}?\"\n",
+        "edges": [
+          {
+            "description": "The condition that triggers the transition to the next state. e.g., \"If the user has provided the name\"",
+            "speak_during_transition": false,
+            "destination_state_name": "discover_intent"
+          }
+        ],
+        "tools": []
+      },
+      {
+        "name": "discover_intent",
+        "state_prompt": "## OBJECTIVES:\n    - Collect the {{entity_name}} of the customer.\n    - Confirm the {{entity_name}} once it's collected.\n\n## Variable Assignment:\n    entity_name = \"type of request (booking, enquiry, cancellation, complaint)\"\n\n## Prompt:\n\"Could you please let me know what you'd like to do — make a new booking, cancel/modify an existing one, or share feedback?\"\n",
+        "edges": [
+          {
+            "description": "The condition that triggers the transition to the next state. e.g., \"If the user has provided the name\"",
+            "speak_during_transition": false,
+            "destination_state_name": "handle_feedback_complaint"
+          },
+          {
+            "description": "The condition that triggers the transition to the next state. e.g., \"If the user has provided the name\"",
+            "speak_during_transition": false,
+            "destination_state_name": "collect_booking_date_time"
+          },
+          {
+            "description": "The condition that triggers the transition to the next state. e.g., \"If the user has provided the name\"",
+            "speak_during_transition": false,
+            "destination_state_name": "collect_modification_date_time"
+          }
+        ],
+        "tools": []
+      },
+      {
+        "name": "collect_modification_date_time",
+        "state_prompt": "## OBJECTIVES:\n    - Collect the {{entity_name}} of the customer.\n    - Confirm the {{entity_name}} once it's collected.\n\n## Variable Assignment:\n    entity_name = \"modification or cancellation date and time\"\n\n## Prompt:\n\"Please share the date and time of the reservation you'd like to change or cancel.\"\n",
+        "edges": [
+          {
+            "description": "The condition that triggers the transition to the next state. e.g., \"If the user has provided the name\"",
+            "speak_during_transition": false,
+            "destination_state_name": "collect_name_under_reservation"
+          },
+          {
+            "description": "The condition that triggers the transition to the next state. e.g., \"If the user has provided the name\"",
+            "speak_during_transition": false,
+            "destination_state_name": "reservation_cancellation"
+          }
+        ],
+        "tools": []
+      },
+      {
+        "name": "reservation_cancellation",
+        "state_prompt": "## Task\n1. Confirm with the user if they really want to cancel their reservation for {{date}} at {{time}}.\nwait for user response\n2. If the user confirms, proceed to cancel the reservation and inform them of the successful cancellation.\n3. If the user does not confirm, ask if they would like to reschedule or need further assistance.\nwait for user response\n4. Transition to the appropriate state based on user input (e.g., collect_new_date_time or end_call).\n",
+        "edges": [
+          {
+            "description": "The condition that triggers the transition to the next state. e.g., \"If the user has provided the name\"",
+            "speak_during_transition": false,
+            "destination_state_name": "confirm_changes"
+          }
+        ],
+        "tools": []
+      },
+      {
+        "name": "apologise_and_escalate",
+        "state_prompt": "## OBJECTIVES:\n    - Inform the prospect/customer about the {{what_to_inform}}.\n\n## Variable Assignment:\n    what_to_inform = \"We sincerely apologize for the inconvenience. We will escalate this matter to our team for resolution.\"\n    tool_to_inform = \"trigger_escalation\"\n    next_step = \"Collect callback date and time\"\n\n## Prompt:\n\"We're truly sorry for the inconvenience caused. I’ll escalate this to our team immediately.\"\n\n{% if tool_to_inform %}\n    **Strictly trigger the **{{tool_to_inform}}** function**\n{% endif %}\n",
+        "edges": [
+          {
+            "description": "The condition that triggers the transition to the next state. e.g., \"If the user has provided the name\"",
+            "speak_during_transition": false,
+            "destination_state_name": "confirm_changes"
+          }
+        ],
+        "tools": []
+      },
+      {
+        "name": "handle_feedback_complaint",
+        "state_prompt": "## OBJECTIVES:\n    - Collect the {{entity_name}} of the customer.\n    - Confirm the {{entity_name}} once it's collected.\n\n## Variable Assignment:\n    entity_name = \"feedback or complaint\"\n\n## Prompt:\n\"Could you please tell me about the issue or feedback you’d like to share?\"\n",
+        "edges": [
+          {
+            "description": "The condition that triggers the transition to the next state. e.g., \"If the user has provided the name\"",
+            "speak_during_transition": false,
+            "destination_state_name": "apologise_and_escalate"
+          }
+        ],
+        "tools": []
+      },
+      {
+        "name": "collect_booking_date_time",
+        "state_prompt": "## OBJECTIVES:\n    - Collect the {{entity_name}} of the customer.\n    - Confirm the {{entity_name}} once it's collected.\n\n## Variable Assignment:\n    entity_name = \"booking date and time\"\n\n## Prompt:\n\"When would you like to book your table at {{location}}?\"\n",
+        "edges": [
+          {
+            "description": "The condition that triggers the transition to the next state. e.g., \"If the user has provided the name\"",
+            "speak_during_transition": false,
+            "destination_state_name": "collect_pax_size"
+          }
+        ],
+        "tools": []
+      },
+      {
+        "name": "collect_new_date_time",
+        "state_prompt": "## Task\n1. Ask the user for the new date and time they would like to reschedule their reservation to.\nwait for user response\n2. Confirm the new date and time with the user.\nwait for user response\n3. If available, proceed to update the reservation; if not, suggest alternative slots.\nwait for user response\n4. Transition to confirmation or next state.\n",
+        "edges": [
+          {
+            "description": "The condition that triggers the transition to the next state. e.g., \"If the user has provided the name\"",
+            "speak_during_transition": false,
+            "destination_state_name": "confirm_changes"
+          }
+        ],
+        "tools": []
+      },
+      {
+        "name": "collect_name_under_reservation",
+        "state_prompt": "## Task\n1. Ask for the full name under which the reservation is made.\nwait for user response\n2. Confirm the spelling if the name is unclear or not found.\nwait for user response\n3. Transition to the next appropriate state (e.g., collect_booking_date_time or reservation_modification).\n",
+        "edges": [
+          {
+            "description": "The condition that triggers the transition to the next state. e.g., \"If the user has provided the name\"",
+            "speak_during_transition": false,
+            "destination_state_name": "collect_new_date_time"
+          }
+        ],
+        "tools": []
+      },
+      {
+        "name": "collect_pax_size",
+        "state_prompt": "## Task\n1. Ask the user how many people will be included in the reservation.\nwait for user response\n2. Confirm the number and check if it is within allowed limits (e.g., maximum 12).\n- If the number is too high, inform the user of the group size limit and ask if they want to proceed with a smaller group or need special arrangements.\nwait for user response\n3. Transition to collect_booking_date_time state.\n",
+        "edges": [
+          {
+            "description": "The condition that triggers the transition to the next state. e.g., \"If the user has provided the name\"",
+            "speak_during_transition": false,
+            "destination_state_name": "confirm_changes"
+          }
+        ],
+        "tools": []
+      },
+      {
+        "name": "confirm_changes",
+        "state_prompt": "## Task\n1. Clearly summarize the updated reservation details for the user. For example:\n   \"Your reservation has been updated to {{new_date}} at {{new_time}} for {{pax_size}} people at our {{location}} branch.\"\n2. Thank the user for choosing us and let them know what to expect next (e.g., confirmation message).\n3. Politely close the conversation.\n",
+        "edges": [],
+        "tools": []
+      }
+    ],
+    "starting_state": "collect_city",
+    "last_modification_timestamp": 1747566325365,
+    "is_published": false,
+    "knowledge_base_ids": []
+  },
+  "conversationFlow": null,
+  "llmURL": null
+}
